@@ -1,0 +1,61 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title </title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+</head>
+<body>
+    <div class="navbar sticky-top  navbar-expand-lg navbar-dark bg-dark onclick animated">
+        <div class="container-fluid">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+             @Html.ActionLink("Rite Aid Shot Finder", "FilterIndex", "Shot", new { area = "" }, new { @class = "navbar-brand" })
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @if (TempData["Message"] != null)
+            {
+                if (TempData["Message"].ToString().Contains("rror"))
+                {
+                    <div class="alert alert-danger">
+                        @TempData["Message"]
+                    </div>
+                }
+
+                else
+                {
+                    <div class="alert alert-info">
+                        @TempData["Message"]
+                    </div>
+                }
+
+            }
+
+            @RenderBody()
+
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2019 - Find A Shot- <a asp-area="" asp-controller="filterindex" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+
+
+    @RenderSection("Scripts", required: false)
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+</body>
+</html>
