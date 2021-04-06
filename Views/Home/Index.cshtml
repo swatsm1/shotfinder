@@ -1,0 +1,33 @@
+﻿@model ShotFinder.Class.StoreSelections
+
+@{
+    ViewBag.Title = "Index";
+}
+
+
+<br />
+
+<h5>Please Select a Store</h5>
+
+
+<br />
+
+
+<form asp-action="StoreAction" method="get">
+    <p>
+        @Html.DropDownList("MyType",
+        EnumHelper.GetSelectList(typeof(ShotFinder.Class.StoreSelections.eStores)),
+        "Select a Store",
+        new { @class = "form-control" })
+
+        <!--Enter Zip:--> @*<input type="text" name="SearchString">*@
+        <!--@Html.TextBox("SearchString", null, new { required = "required" })
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })-->
+
+        <input type="submit" value="Search" class="btn btn-sm btn-primary" />
+
+    </p>
+</form>
+
+
+
