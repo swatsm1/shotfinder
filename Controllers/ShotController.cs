@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using ShotFinder.Class;
 using ShotFinderMVC.Class;
 using ShotFinderMVC.Models;
 using System;
@@ -10,6 +11,8 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using static ShotFinder.Class.CVSStoresStateFL;
+using static ShotFinder.Class.CVSStoresStateNJ;
 
 namespace ShotFinderMVC.Controllers
 {
@@ -61,6 +64,9 @@ namespace ShotFinderMVC.Controllers
                     return (ActionResult)View(StoreModel);
                 }
 
+
+            
+
                 List<Stores> mystores = new List<Stores>();
 
                 ///Web Service to Consume
@@ -85,7 +91,7 @@ namespace ShotFinderMVC.Controllers
 
                 StoreData.Root Stores;
 
-                var result = responseTask.Result;
+                 var result = responseTask.Result;
                 if (result.IsSuccessStatusCode)
                 {
 
@@ -274,6 +280,155 @@ namespace ShotFinderMVC.Controllers
 
                 StoreModel.ShotStores = mystores;
 
+
+                return (ActionResult)View(StoreModel);
+            }
+            catch (Exception ex)
+            {
+                if (!(TempData == null))
+                {
+                    TempData["Message"] = ($"Error { ex.Message }");
+                    return RedirectToAction("Error500", "Errors");
+                }
+                else
+
+                    return RedirectToAction("Error500", "Errors", ex.Message);
+            }
+        }
+
+        
+        public async Task<ActionResult> CVSFilter(string SearchString)
+        {
+            try
+            {
+                StoresViewModel StoreModel = new StoresViewModel();
+                List<Stores> mystores = new List<Stores>();
+
+
+                if (String.IsNullOrEmpty(SearchString))
+                {
+                    ModelState.AddModelError("SearchString", "States must contain a value.");
+                    return (ActionResult)View(StoreModel);
+                }
+
+
+                string thisstate = string.Empty;
+
+                switch (SearchString)
+                {
+                    case "0":
+                        thisstate="NJ";
+                        break;
+                    case "1":
+                        thisstate="FL";
+                        break;
+
+                }
+
+                ///CVS logic
+
+                var request = new HttpRequestMessage()
+                {
+                    RequestUri = new Uri("https://www.cvs.com/immunizations/covid-19-vaccine.vaccine-status." + thisstate.ToLower() + ".json?vaccineinfo"),
+                    Method = HttpMethod.Get,
+                };
+
+                request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                request.Headers.UserAgent.ParseAdd("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.190 Safari/537.36");
+                request.Headers.Accept.ParseAdd("text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9");
+                request.Headers.AcceptLanguage.ParseAdd("en-US,en;q=0.9");
+                request.Headers.Referrer = new Uri("https://www.cvs.com/immunizations/covid-19-vaccine");
+
+                var responseTask = _client.SendAsync(request);
+                responseTask.Wait();
+
+                var result = responseTask.Result;
+                if (result.IsSuccessStatusCode)
+                {
+
+                    var readTask = await result.Content.ReadAsStringAsync();
+
+                    CVSStoresStateNJ.Rootobject cvsNJstores;
+                    CVSStoresStateFL.Rootobject cvsFLstores;
+
+                    if (thisstate.ToString().Contains("FL"))
+                    {
+
+                        cvsFLstores = JsonConvert.DeserializeObject<CVSStoresStateFL.Rootobject>(readTask);
+
+                       
+
+                        if (cvsFLstores.IsNotNull())
+                        {
+
+                            CVSStoresStateFL.Data storedata = cvsFLstores.responsePayloadData.data;
+                        
+                           if  (cvsFLstores.responsePayloadData.IsNotNull())
+                            {
+                                foreach (FL store in storedata.FL)
+                                {
+
+                                    Stores stores = new Stores()
+                                    {
+                                        Address = store.city,
+                                        StoreNumber = 0,
+                                        city = store.city,
+                                        State = store.state,
+                                        Zip = "",
+                                        Status = store.status
+
+                                    };
+
+
+                                    mystores.Add(stores);
+
+                                }
+                            }
+
+                        }
+
+                    }
+                    else
+                    {
+                        cvsNJstores = JsonConvert.DeserializeObject<CVSStoresStateNJ.Rootobject>(readTask);
+
+                        if (cvsNJstores.IsNotNull())
+                        {
+                            
+
+
+                            CVSStoresStateNJ.Data storedata = cvsNJstores.responsePayloadData.data;
+                            if (cvsNJstores.responsePayloadData.IsNotNull())
+                            {
+                                foreach (NJ store in storedata.NJ)
+                                {
+
+                                    Stores stores = new Stores()
+                                    {
+                                        Address = store.city,
+                                        StoreNumber = 0,
+                                        city = store.city,
+                                        State = store.state,
+                                        Zip = "",
+                                        Status = store.status
+
+                                    };
+
+
+                                    mystores.Add(stores);
+
+                                }
+                            }
+
+                        }
+
+                    }
+
+                }
+
+                ///CVS logic
+
+                StoreModel.ShotStores = mystores;
 
                 return (ActionResult)View(StoreModel);
             }
