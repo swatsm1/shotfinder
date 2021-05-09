@@ -8,12 +8,23 @@ namespace ShotFinderMVC.Class
 {
     public class Slots
     {
-        [JsonProperty("1")]
-        public bool _1 { get; set; }
+        [JsonProperty("9")]
+        public bool _9 { get; set; }
 
-        [JsonProperty("2")]
+        [JsonProperty("10")]
 
-        public bool _2 { get; set; }
+        public bool _10 { get; set; }
+
+        [JsonProperty("11")]
+        public bool _11 { get; set; }
+
+        [JsonProperty("12")]
+
+        public bool _12 { get; set; }
+
+        [JsonProperty("13")]
+
+        public bool _13 { get; set; }
     }
 
     public class Data
