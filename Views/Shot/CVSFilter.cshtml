@@ -45,25 +45,16 @@
 
                         <tr>
                             <th>
-                                @Html.DisplayNameFor(model => model.ShotStores[0].StoreNumber)
-                            </th>
-                            <th>
-                                @Html.DisplayNameFor(model => model.ShotStores[0].Address)
-                            </th>
-                            <th>
                                 @Html.DisplayNameFor(model => model.ShotStores[0].city)
                             </th>
                             <th>
                                 @Html.DisplayNameFor(model => model.ShotStores[0].State)
                             </th>
-                            <th>
-                                @Html.DisplayNameFor(model => model.ShotStores[0].Zip)
-                            </th>
+                          
                             <th>
                                 @Html.DisplayNameFor(model => model.ShotStores[0].Status)
                             </th>
 
-                            <th></th>
                         </tr>
 
                     </thead>
@@ -72,20 +63,12 @@
                         {
                             <tr>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.StoreNumber)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Address)
+                                    @Html.DisplayFor(modelItem => item.city)
                                 </td>
                                 <td>
                                     @Html.DisplayFor(modelItem => item.State)
                                 </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.city)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Zip)
-                                </td>
+                                
                                 <td>
                                     @if (item.Status != "Fully Booked")
                                     {
