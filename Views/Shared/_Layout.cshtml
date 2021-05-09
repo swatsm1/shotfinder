@@ -13,7 +13,27 @@
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-             @Html.ActionLink("COVID Shot Finder", "StoreAction", "Home", new { area = "" }, new { @class = "navbar-brand" })
+            @if (TempData["Store"] != null)
+            {
+                if (TempData["Store"].ToString().Contains("CVS"))
+                {
+                    @Html.ActionLink("CVS COVID Shot Finder", "StoreAction", "Home", new { area = "" }, new { @class = "navbar-brand" })
+
+                }
+
+                else
+                {
+                    @Html.ActionLink("RiteAid COVID Shot Finder", "StoreAction", "Home", new { area = "" }, new { @class = "navbar-brand" })
+
+                }
+
+            }
+            else
+            {
+                @Html.ActionLink("COVID Shot Finder", "StoreAction", "Home", new { area = "" }, new { @class = "navbar-brand" })
+            }
+
+   
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                 </ul>
@@ -22,6 +42,34 @@
     </div>
     <div class="container">
         <main role="main" class="pb-3">
+
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    @if (TempData["Store"] != null)
+                    {
+                        if (TempData["Store"].ToString().Contains("CVS"))
+                        {
+                            @Html.ActionLink("Return to RiteAid ", "FilterIndex", "Shot")
+
+                            <li class="breadcrumb-item active" aria-current="page"></li>
+                        }
+
+                        else
+                        {
+                            @Html.ActionLink("Return to CVS ", "CVSFilter", "Shot")
+
+                            <li class="breadcrumb-item active" aria-current="page"></li>
+
+
+                        }
+
+                    }
+
+                    @*<li class="breadcrumb-item"><a href="#">Rite Aid</a></li>
+        <li class="breadcrumb-item active" aria-current="page">CVS</li>*@
+                </ol>
+            </nav>
+
             @if (TempData["Message"] != null)
             {
                 if (TempData["Message"].ToString().Contains("rror"))
