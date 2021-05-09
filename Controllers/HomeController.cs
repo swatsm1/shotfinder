@@ -33,8 +33,13 @@ namespace ShotFinder.Controllers
             switch (SearchString)
             {
                 case "0":
+                    TempData["Store"] = ($"Riteaid");
+
                     return RedirectToAction("FilterIndex", "Shot");
                 case "1":
+
+                    TempData["Store"] = ($"CVS");
+
                     return RedirectToAction("CVSFilter", "Shot");
 
             }

@@ -57,6 +57,7 @@ namespace ShotFinderMVC.Controllers
             {
                 StoresViewModel StoreModel = new StoresViewModel();
 
+                TempData["Store"] = ($"Riteaid");
 
                 if (String.IsNullOrEmpty(SearchString))
                 {
@@ -64,19 +65,16 @@ namespace ShotFinderMVC.Controllers
                     return (ActionResult)View(StoreModel);
                 }
 
-
-            
-
-                List<Stores> mystores = new List<Stores>();
+              
+                    List<Stores> mystores = new List<Stores>();
 
                 ///Web Service to Consume
                 ///https://www.riteaid.com/services/ext/v2/vaccine/checkSlots?storeNumber=1870
-
                 ///https://www.riteaid.com/services/ext/v2/stores/getStores?address=08889&attrFilter=PREF-112&fetchMechanismVersion=2&radius=50
 
                 var request = new HttpRequestMessage()
                 {
-                    RequestUri = new Uri("https://www.riteaid.com/services/ext/v2/stores/getStores?address=" + SearchString + "&attrFilter=PREF-112&fetchMechanismVersion=2&radius=50"),
+                    RequestUri = new Uri("https://www.riteaid.com/services/ext/v2/stores/getStores?address=" + SearchString + "&attrFilter=PREF-112&fetchMechanismVersion=2&radius=90"),
                     Method = HttpMethod.Get,
                 };
 
@@ -227,18 +225,18 @@ namespace ShotFinderMVC.Controllers
 
 
 
-                        if (StoreSlot._1 == true )
+                        if (StoreSlot._9 == true || StoreSlot._10 == true || StoreSlot._11==true || StoreSlot._12 ==true || StoreSlot._13==true)
                         {
                             reason = "Store Has Appointments";
                         }
                         else
                             reason = "No Appointments";
 
-                        if (StoreSlot._1 == true )
-                           if( StoreSlot._2 == true)
-                            {
-                                reason = "Store Has Appointment times";
-                            }
+                        //if (StoreSlot._1 == true )
+                        //   if( StoreSlot._2 == true)
+                        //    {
+                        //        reason = "Store Has Appointment times";
+                        //    }
                             
 
 
@@ -303,13 +301,15 @@ namespace ShotFinderMVC.Controllers
             {
                 StoresViewModel StoreModel = new StoresViewModel();
                 List<Stores> mystores = new List<Stores>();
-
+                TempData["Store"] = ($"CVS");
 
                 if (String.IsNullOrEmpty(SearchString))
                 {
                     ModelState.AddModelError("SearchString", "States must contain a value.");
                     return (ActionResult)View(StoreModel);
                 }
+
+      
 
 
                 string thisstate = string.Empty;
